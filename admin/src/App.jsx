@@ -11,6 +11,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useEffect } from 'react'
 import Orders from './pages/Orders'
 import Slide from './pages/Slide'
+import Update from './pages/Update'
+import Change from './pages/Change'
 
 export const backendUrl = import.meta.env.VITE_BACKEND_URL
 export const currency = 'VND'
@@ -22,7 +24,6 @@ const App = () => {
   useEffect(() => {
     localStorage.setItem('token', token)
   }, [token])
-
   return (
     <div className='bg-gray-50 min-h-screen'>
       <ToastContainer />
@@ -40,6 +41,7 @@ const App = () => {
                 <Route path='/list' element={<List token={token} />} />
                 <Route path='/orders' element={<Orders token={token} />} />
                 <Route path='/slide' element={<Slide token={token} />} />
+                <Route path='/change/:productId' element={<Change token={token} />} />
               </Routes>
             </div>
           </div>
