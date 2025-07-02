@@ -8,39 +8,22 @@ export const ShopContext = createContext();
 
 const ShopContextProvider = (props) => {
 
-    const [products, setProducts] = useState([]);
     const [token, setToken] = useState('');
-
-
-    const getProductData = async () => {
-        try {
-            const response = await axios.get(backendUrl + '/api/product/list');
-            if (response.data.success) {
-                const reversedProduct = response.data.product.reverse()
-                setProducts(reversedProduct)
-            } else {
-                toast.error(response.data.message)
-            }
-        } catch (error) {
-            console.log(error)
-            toast.error(error.message)
-        }
-    }
-
-    useEffect(() => {
-        getProductData();
-    }, [])
 
     useEffect(() => {
         if (!token && localStorage.getItem('token')) {
             setToken(localStorage.getItem('token'))
-
         }
     }, [])
 
+    const capitalizeWords = (str) => {
+        return str.toLowerCase().replace(/\b\w/g, (char, idx) => (idx === 0 || str[idx - 1] === ' ') ? char.toUpperCase() : char);
+    }
+
     const value = {
-        products,
-        setToken, token
+        setToken, token,
+        capitalizeWords
+
     }
 
     return (

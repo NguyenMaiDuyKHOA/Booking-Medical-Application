@@ -3,7 +3,6 @@ import Navbar from './components/Navbar'
 import Sidebar from './components/Sidebar'
 import { Routes, Route } from 'react-router-dom'
 import Add from './pages/Add'
-import List from './pages/List'
 import { useState } from 'react'
 import Login from './components/Login'
 import { ToastContainer } from 'react-toastify';
@@ -11,8 +10,10 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useEffect } from 'react'
 import Orders from './pages/Orders'
 import Slide from './pages/Slide'
-import Update from './pages/Update'
 import Change from './pages/Change'
+import About from './pages/About'
+import Clinic from './pages/Clinic'
+import ListBooking from './pages/ListBooking'
 
 export const backendUrl = import.meta.env.VITE_BACKEND_URL
 export const currency = 'VND'
@@ -37,11 +38,13 @@ const App = () => {
             <div className='w-[70%] mx-auto ml-[max(5vw,25px)] my-8 text-gray-600 text-base'>
 
               <Routes>
+                <Route path='/' element={<Clinic token={token} />} />
+                <Route path='/about' element={<About token={token} />} />
                 <Route path='/add' element={<Add token={token} />} />
-                <Route path='/list' element={<List token={token} />} />
+                <Route path='/list' element={<ListBooking token={token} />} />
                 <Route path='/orders' element={<Orders token={token} />} />
                 <Route path='/slide' element={<Slide token={token} />} />
-                <Route path='/change/:productId' element={<Change token={token} />} />
+                <Route path='/change/:doctorId' element={<Change token={token} />} />
               </Routes>
             </div>
           </div>

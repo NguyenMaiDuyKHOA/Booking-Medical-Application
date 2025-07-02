@@ -4,11 +4,13 @@ import 'dotenv/config'
 import connectDB from './config/mongodb.js';
 import connectCloudinary from './config/cloudinary.js';
 import userRouter from './routes/userRoute.js';
-import productRouter from './routes/productRoute.js';
+import bookingRouter from './routes/bookingRoute.js';
 import cartRouter from './routes/cartRoute.js';
 import orderRouter from './routes/orderRoute.js';
 import slideRouter from './routes/slideRoute.js'
-import reviewRouter from './routes/reviewRoute.js';
+import clinicRouter from './routes/clinicRoute.js';
+import doctorRouter from './routes/doctorRoute.js';
+import articleRouter from './routes/articleRoute.js';
 
 // App Config
 const app = express();
@@ -24,11 +26,13 @@ app.use(cors())
 
 // api endpoints
 app.use('/api/user', userRouter)
-app.use('/api/product', productRouter)
+app.use('/api/doctor', doctorRouter)
+app.use('/api/booking', bookingRouter)
 app.use('/api/cart', cartRouter)
 app.use('/api/order', orderRouter)
 app.use('/api/slide', slideRouter)
-app.use('/api/review', reviewRouter)
+app.use('/api/clinic', clinicRouter)
+app.use('/api/article', articleRouter)
 
 app.get('/', (req, res) => {
     res.send("API Working")

@@ -17,8 +17,6 @@ const addSlide = async (req, res) => {
             image: result.secure_url, // URL ảnh từ Cloudinary
         };
 
-        console.log(slideData);
-
         // Lưu dữ liệu vào MongoDB
         const slide = new slideModel(slideData);
         await slide.save();

@@ -4,7 +4,14 @@
 @tailwind utilities;
 
 * {
-    font-family: Outfit;
+    font-family: "Euclid Circular A", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.react-calendar__tile.bg-blue-200,
+.react-calendar__tile.bg-blue-200:enabled:hover,
+.react-calendar__tile.bg-blue-200:enabled:focus {
+  background: #bfdbfe !important; /* Tailwind bg-blue-200 */
+  color: #1e3a8a !important;      /* Tailwind text-blue-900 */
 }
 
 select, input, textarea {

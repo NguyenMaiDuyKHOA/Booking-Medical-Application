@@ -7,144 +7,84 @@ export const ShopContext = createContext();
 
 const ShopContextProvider = (props) => {
 
-    const currency = 'VND'; //Đơn vị tiền tệ
-    const delivery_fee = 30000;
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
     const [search, setSearch] = useState('');
     const [showSearch, setShowSearch] = useState(false);
-    const [cartItems, setCartItems] = useState({});
-    const [products, setProducts] = useState([]);
+    const [articles, setArticles] = useState([]);
     const [slide, setSlide] = useState([]);
+    const [clinic, setClinic] = useState([]);
+    const [info, setInfo] = useState([])
+    const [doctorList, setDoctorList] = useState([])
     const [token, setToken] = useState('');
+    const [role, setRole] = useState()
     const navigate = useNavigate();
 
-    // addToCart function
-    const addToCart = async (itemId, size) => {
-        let cartData = structuredClone(cartItems);
-
-        if (!size) {
-            toast.error('Please Select Product Size')
-            return;
-        }
-
-        if (cartData[itemId]) {
-            if (cartData[itemId][size]) {
-                cartData[itemId][size] += 1;
-            }
-            else {
-                cartData[itemId][size] = 1;
-            }
-        }
-        else {
-            cartData[itemId] = {};
-            cartData[itemId][size] = 1;
-        }
-        setCartItems(cartData);
-
-        if (token) {
-            try {
-                await axios.post(backendUrl + '/api/cart/add', { itemId, size }, { headers: { token } })
-            } catch (error) {
-                console.log(error)
-                toast.error(error.message)
-            }
-        }
-    }
-
-    // get Card Data
-    const getCartCount = () => {
-        let totalCount = 0;
-
-        for (const items in cartItems) {
-            for (const item in cartItems[items]) {
-                try {
-                    if (cartItems[items][item]) {
-                        totalCount += cartItems[items][item];
-                    }
-                } catch (error) {
-
-                }
-            }
-        }
-
-        return totalCount;
-    }
-
-    const updateQuantity = async (itemId, size, quantity) => {
-        let cartData = structuredClone(cartItems);
-
-        cartData[itemId][size] = quantity;
-
-        setCartItems(cartData);
-
-        if (token) {
-            try {
-                await axios.post(backendUrl + '/api/cart/update', { itemId, size, quantity }, { headers: { token } })
-            } catch (error) {
-                console.log(error)
-                toast.error(error.message)
-            }
-        }
-    }
-
-
-    const getCartAmount = () => {
-        let totalAmount = 0;
-
-        // Kiểm tra nếu products đã có dữ liệu
-        if (products.length === 0) {
-            console.log('Products data is still loading...');
-            return totalAmount; // Không tính toán nếu chưa có dữ liệu
-        }
-
-        for (const items in cartItems) {
-            let itemInfo = products.find((product) => product._id === items);
-
-            if (itemInfo) {
-                for (const item in cartItems[items]) {
-                    try {
-                        if (cartItems[items][item] > 0) {
-                            totalAmount += itemInfo.price * cartItems[items][item];
-                        }
-                    } catch (error) {
-                        console.log(error);
-                        toast.error(error.message);
-                    }
-                }
-            } else {
-                // Nếu không tìm thấy itemInfo, bạn có thể thông báo lỗi hoặc làm gì đó
-                console.log(`Product not found for item ID: ${items}`);
-            }
-        }
-
-        return totalAmount;
-    }
-
-
-    const getProductData = async () => {
+    const getClinicInfo = async () => {
         try {
-            const response = await axios.get(backendUrl + '/api/product/list');
+            const response = await axios.get(backendUrl + '/api/clinic/getclinic')
+            setClinic(response.data.info[0])
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const getUserInfo = async () => {
+        try {
+            const response = await axios.post(backendUrl + '/api/user/getuser', {}, { headers: { token } })
+            const response2 = await axios.post(backendUrl + '/api/user/getdoctor', {}, { headers: { token } })
             if (response.data.success) {
-                const reversedProduct = response.data.product.reverse()
-                setProducts(reversedProduct)
-            } else {
-                toast.error(response.data.message)
+                setInfo(response.data.info)
+            }
+
+            if (response2.data.success) {
+                setInfo(response2.data.info)
             }
         } catch (error) {
             console.log(error)
-            toast.error(error.message)
         }
     }
 
-    const getUserCart = async (token) => {
+    const getDoctorInfo = async () => {
         try {
-            const response = await axios.post(backendUrl + '/api/cart/get', {}, { headers: { token } })
-            if (response.data.success) {
-                setCartItems(response.data.cartData)
+            const response = await axios.post(backendUrl + '/api/user/getdoctor', {}, { headers: { token } })
+            setInfo(response.data.info)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const getRole = () => {
+        try {
+            if (info) {
+                setRole(info.role)
             }
         } catch (error) {
             console.log(error)
-            toast.error(error.message)
+        }
+    }
+
+
+    const getDoctorList = async () => {
+        try {
+            const response = await axios.get(backendUrl + '/api/doctor/doctorlist')
+
+            if (response.data.success) {
+                setDoctorList(response.data.doctor)
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const fetchAllArticle = async () => {
+        try {
+            const response = await axios.get(backendUrl + '/api/article/all')
+
+            if (response.data.success) {
+                setArticles(response.data.article)
+            }
+        } catch (error) {
+            console.error("Error fetching articles:", error);
         }
     }
 
@@ -153,36 +93,47 @@ const ShopContextProvider = (props) => {
             const response = await axios.get(backendUrl + '/api/slide/list')
             if (response.data.success) {
                 setSlide(response.data.slide)
-            } else {
-                toast.error(response.data.message)
             }
         } catch (error) {
             console.log(error)
-            toast.error(error.message)
         }
     }
+
+    useEffect(() => {
+        getClinicInfo()
+    }, [])
+
+    useEffect(() => {
+        getUserInfo()
+    }, [token])
+
+    useEffect(() => {
+        getRole()
+    }, [info])
+
+    useEffect(() => {
+        getDoctorList()
+    }, [])
+
+    useEffect(() => {
+        fetchAllArticle()
+    }, [])
 
     useEffect(() => {
         getSlideBanner()
     }, [])
 
     useEffect(() => {
-        getProductData();
-    }, [])
-
-    useEffect(() => {
         if (!token && localStorage.getItem('token')) {
             setToken(localStorage.getItem('token'))
-            getUserCart(localStorage.getItem('token'))
         }
     }, [])
 
     const value = {
-        products, slide, currency, delivery_fee,
+        slide, articles,
         search, setSearch, showSearch, setShowSearch,
-        cartItems, addToCart, setCartItems,
-        getCartCount, updateQuantity,
-        getCartAmount, navigate, backendUrl,
+        clinic, info, doctorList, role,
+        navigate, backendUrl,
         setToken, token
     }
 

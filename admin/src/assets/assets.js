@@ -1,8 +1,4 @@
-import logo from './logo.png'
-import logo_nobg from './logo_nobg.png'
-import logo_bggray200 from './logo_bggray200.png'
-import logo_bggray800 from './logo_bggray800.png'
-import logo_bgblack from './logo_bgblack.png'
+import logo from './Logo.png'
 import add_icon from './add_icon.png'
 import order_icon from './order_icon.png'
 import upload_area from './upload_area.png'
@@ -12,13 +8,17 @@ import search_icon from './search_icon.png'
 import pen from './pen.png'
 import banner_icon from './banner__icon.png'
 import diagram_icon from './diagram_icon.png'
+import eye from './eye.png'
+import hidden from './hidden.png'
+import user from './user.png'
+import checklist from './checklist.png'
+import home from './home.png'
+import up from './Up.png'
+import addphoto from './add-photo.png'
+import key from './key.png'
 
 export const assets = {
     logo,
-    logo_nobg,
-    logo_bggray200,
-    logo_bggray800,
-    logo_bgblack,
     add_icon,
     order_icon,
     upload_area,
@@ -27,6 +27,14 @@ export const assets = {
     search_icon,
     pen,
     banner_icon,
-    diagram_icon
+    diagram_icon,
+    eye,
+    hidden,
+    user,
+    checklist,
+    home,
+    up,
+    addphoto,
+    key
 }
 
