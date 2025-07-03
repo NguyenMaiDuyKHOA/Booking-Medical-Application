@@ -21,7 +21,9 @@ const Login = () => {
                 return;
             }
 
-            const response = await axios.post(backendUrl + '/api/user/sendotp', { phone })
+            // const response = await axios.post(backendUrl + '/api/user/sendotp', { phone })
+            const response = await axios.post(backendUrl + '/api/user/sendsms', { phone })
+
             if (response.data.success) {
                 setOtpId(response.data.otpId)
                 toast.success("Đã gửi OTP")

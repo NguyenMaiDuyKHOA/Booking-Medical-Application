@@ -9,6 +9,32 @@ export const ShopContext = createContext();
 const ShopContextProvider = (props) => {
 
     const [token, setToken] = useState('');
+    const [booking, setBooking] = useState([])
+
+    const fetchAllBooking = async () => {
+        try {
+            const response = await axios.post(backendUrl + '/api/booking/bookinglist', {}, { headers: { token } })
+            if (response.data.success) {
+                setBooking(response.data.booking)
+            }
+        } catch (error) {
+            console.error(error.message)
+        }
+    }
+
+    const getBookingCount = () => {
+        let bookingCount = 0
+
+        try {
+            if (booking)
+                // Đếm số booking chưa Accept
+                bookingCount = booking.filter(item => item.status === false || item.status === "false").length;
+        } catch (error) {
+            console.error(error.message)
+        }
+
+        return bookingCount
+    }
 
     useEffect(() => {
         if (!token && localStorage.getItem('token')) {
@@ -16,14 +42,20 @@ const ShopContextProvider = (props) => {
         }
     }, [])
 
+    useEffect(() => {
+        fetchAllBooking()
+    }, [token])
+
     const capitalizeWords = (str) => {
         return str.toLowerCase().replace(/\b\w/g, (char, idx) => (idx === 0 || str[idx - 1] === ' ') ? char.toUpperCase() : char);
     }
 
+    console.log(booking)
+
     const value = {
         setToken, token,
-        capitalizeWords
-
+        capitalizeWords,
+        booking, getBookingCount
     }
 
     return (

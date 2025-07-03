@@ -1,28 +1,29 @@
 import React from 'react'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { backendUrl } from '../App'
 import moment from 'moment'
 import axios from 'axios'
 import { assets } from '../assets/assets'
+import { ShopContext } from '../context/ShopContext'
 
 
 const ListBooking = ({ token }) => {
-    const [booking, setBooking] = useState([])
+    const { booking } = useContext(ShopContext)
 
-    const fetchAllBooking = async () => {
-        if (!token) {
-            return null
-        }
+    // const fetchAllBooking = async () => {
+    //     if (!token) {
+    //         return null
+    //     }
 
-        try {
-            const response = await axios.post(backendUrl + '/api/booking/bookinglist', {}, { headers: { token } })
-            if (response.data.success) {
-                setBooking(response.data.booking)
-            }
-        } catch (error) {
-            console.error(error.message)
-        }
-    }
+    //     try {
+    //         const response = await axios.post(backendUrl + '/api/booking/bookinglist', {}, { headers: { token } })
+    //         if (response.data.success) {
+    //             setBooking(response.data.booking)
+    //         }
+    //     } catch (error) {
+    //         console.error(error.message)
+    //     }
+    // }
 
     const statusHandler = async (event, bookingId) => {
         try {
@@ -36,12 +37,7 @@ const ListBooking = ({ token }) => {
             toast.error(response.data.message)
         }
     }
-
     console.log(booking)
-
-    useEffect(() => {
-        fetchAllBooking()
-    }, [token])
     return (
         <div>
             <h3>List Booking</h3>

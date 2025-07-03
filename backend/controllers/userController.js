@@ -6,9 +6,51 @@ import userModel from "../models/userModel.js";
 import axios from "axios"
 import otpModel from "../models/otpModel.js";
 import doctorModel from "../models/doctorModel.js";
+import { Vonage } from '@vonage/server-sdk'
 
 const createToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET)
+}
+
+const sendSMS = async (req, res) => {
+    const vonage = new Vonage({
+        apiKey: "ffaacdbd",
+        apiSecret: "1CDFHCaQNIoq8PLL"
+    })
+
+    try {
+        const { phone } = req.body
+
+        const from = "Vonage APIs"
+        const to = "84" + phone.slice(1)
+        const verifyOtp = Math.floor(100000 + Math.random() * 900000).toString();
+        const text = 'Your verify OTP is: ' + verifyOtp + '. OTP will expires at 1 minute'
+
+        // Call API from Vonage to send OTP
+        const response = await vonage.sms.send({ to, from, text })
+
+        if (response.messages.status === "0") {
+            // Hashing otp
+            const salt = await bcrypt.genSalt(10)
+            const hashedOtp = await bcrypt.hash(verifyOtp, salt)
+
+            const newOtp = new otpModel({
+                phone: phone,
+                otp: hashedOtp,
+            })
+
+            const otp = await newOtp.save()
+
+            const otpId = otp._id
+
+            res.json({ success: true, otpId })
+        } else {
+            res.json({ success: false, message: "Fail to send OTP" })
+        }
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: error.message })
+    }
 }
 
 // Route for Send - OTP
@@ -187,4 +229,4 @@ const doctorLogin = async (req, res) => {
     }
 }
 
-export { loginUser, getInfoUser, adminLogin, sendOtp, doctorLogin, getInfoDoctor }
+export { loginUser, getInfoUser, adminLogin, sendOtp, doctorLogin, getInfoDoctor, sendSMS }
